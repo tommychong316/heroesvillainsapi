@@ -7,19 +7,9 @@ from super_types.models import Super_Type
 from .serializers import SuperSerializer
 from .models import Super
 from supers import serializers
-@api_view(['GET', 'POST'])
 
-# def super_types_list(request):
-#     super_types = Super_Type.objects.all()
-#     type_of_super = {}
-#     for super_type in super_types:
-#         supers = Super.objects.filter(super_type_id=super_type.id)
-#         super.serializer = SuperSerializer(supers, many=True)
-        
-#         type_of_super[super_type.type] = {
-#             'type': super_type.type,
-#         }
-#     return Response(type_of_super)
+
+@api_view(['GET', 'POST'])
 def supers_list(request):
    
     if request.method == 'GET':
@@ -40,9 +30,7 @@ def supers_list(request):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
-    
-    
+   
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def super_detail(request, pk):
@@ -58,3 +46,38 @@ def super_detail(request, pk):
    elif request.method == 'DELETE':
        super.delete()
        return Response(status=status.HTTP_204_NO_CONTENT)
+   
+# @api_view(['GET'])
+# def supers_list(request):
+#     super_type_param = request.query_params.get('super_type')
+#     sort_param = request.query_params.get('sort')
+    
+#     print(super_type_param)
+#     print(sort_param)
+
+# @api_view(['GET'])
+# def supers_list(request):
+#     super_type_param = request.queery_params.get('super_type')
+#     sort_param = request.query_params.get('sort')
+#     supers = Super.objects.all()
+    
+#     if super_type_param:
+#         supers = supers.filter(super_type__type=super_type_param)
+    
+#     if sort_param:
+#         supers = supers.order_by(sort_param)
+        
+#     serializer = SuperSerializer(supers, many=True)
+#     return Response(serializer.data)
+
+@api_view(['GET'])
+def super_type_list(request):
+    super_types = Super_Type.objects.all()
+    supers_type = {}
+    for super_type in super_types:
+        supers = Super.objects.filter(super_type_id=super_type.id)
+        super_serializer = SuperSerializer(supers, many=True)
+        supers_type[super_type.type] = {
+            'type': super_type.type
+        }   
+    return Response(supers_type)
